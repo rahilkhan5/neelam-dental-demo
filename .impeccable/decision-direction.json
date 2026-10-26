@@ -1,0 +1,131 @@
+{
+  "title": "Clinic demo: choose the look",
+  "question": "The roll picked Kashi Glaze. Keep it, take another card, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Kashi Glaze",
+      "kicker": "THE ROLL",
+      "lineage": "Lahore's kashi tilework (Wazir Khan Mosque) and Mughal jali screens",
+      "thesis": "The clinic as cool glazed tilework: every free appointment is a glazed tile you can take.",
+      "palette": ["#f5f7f2", "#1d3a8a", "#1f9a95", "#c9922e", "#9c4a2f"],
+      "materials": ["glazed tile", "jali screen light"],
+      "viewport": "A jali screen frames today's free slots as glazed tiles beside the clinic name and timings; Book sits on the first free tile.",
+      "risk": "Can read as a mosque or a restaurant if ornament outweighs the clean white glaze.",
+      "raised": [
+        { "from": "challenger-manga", "raise": "Solid lapis is kept for one decisive moment: the confirmed booking." },
+        { "from": "challenger-map", "raise": "Find us draws one single route from a known landmark to the clinic door." },
+        { "from": "challenger-accretion", "raise": "Slots show a ladder (free, filling, last one, full) as glaze depth, not only on or off." },
+        { "from": "challenger-quilt", "raise": "Every doctor and service caption is joined to its tile by a visible grout line." },
+        { "from": "challenger-ikeda", "raise": "Text sits on two values only, white glaze and lapis ink, so it reads in daylight." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Parchi",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Pakistani doctors' prescription pads and clinic token slips",
+      "thesis": "The website as the clinic's own letterhead: booking hands you a numbered token slip.",
+      "palette": ["#ffffff", "#1c3d7a", "#e94f6a", "#2d6a4f"],
+      "materials": ["letterhead print", "carbon token slip"],
+      "viewport": "The doctor's letterhead with degrees and a timings box; a token slip tears off with your booked time.",
+      "risk": "The most familiar direction; it can feel like paperwork rather than care."
+    },
+    {
+      "id": "challenger-vu",
+      "label": "Availability Bridge",
+      "verdict": "competitive",
+      "lineage": "a recording desk's row of VU meters",
+      "thesis": "All doctors stand side by side as a row of meters, so the whole week reads at one glance.",
+      "palette": ["#efe9dc", "#111111", "#6b4a2f", "#c8102e"],
+      "materials": ["meter glass", "walnut desk"],
+      "viewport": "A bridge of doctor meters, each needle showing how full their day is; tap one to book.",
+      "case": "Fuses well for clarity (availability in one sweep), but patients do not know studio desks.",
+      "risk": "A recording studio feels cold and technical for a family clinic.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-vu-meter-bridge-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/signals-instruments-vu-meter-bridge.webp"
+    },
+    {
+      "id": "challenger-manga",
+      "label": "Manga Screentone",
+      "verdict": "declined",
+      "lineage": "weekly manga pages",
+      "thesis": "The clinic told in black and white panels with speed lines.",
+      "palette": ["#ffffff", "#111111", "#8a8a8a"],
+      "materials": ["screentone", "newsprint"],
+      "viewport": "Panels of the patient's visit, the booking as the bleed panel.",
+      "case": "Fuses poorly: Lahore families do not read a clinic as a comic.",
+      "kept": "One solid fill kept only for the decisive moment.",
+      "risk": "Playful where patients want calm.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-manga-screentone-page-hero.webp"
+    },
+    {
+      "id": "challenger-map",
+      "label": "Treasure Map",
+      "verdict": "declined",
+      "lineage": "old hand-drawn sea charts",
+      "thesis": "Finding the clinic as following a drawn route.",
+      "palette": ["#d8c9a3", "#4a3420", "#a3322a"],
+      "materials": ["vellum", "iron-gall ink"],
+      "viewport": "A parchment map with the route to the clinic in red.",
+      "case": "Fuses poorly: mystery is the opposite of what a patient needs.",
+      "kept": "One single drawn route for directions.",
+      "risk": "Puzzling instead of clear.",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-salt-stiffened-treasure-map-hero.webp"
+    },
+    {
+      "id": "challenger-accretion",
+      "label": "Accretion Disk",
+      "verdict": "declined",
+      "lineage": "black hole imagery",
+      "thesis": "Time slots orbiting a dark center.",
+      "palette": ["#05060a", "#cfe3ff", "#d4a017"],
+      "materials": ["light rings", "void black"],
+      "viewport": "Rings of slots around a black center.",
+      "case": "Fuses poorly: dark and cosmic feels wrong for a family clinic.",
+      "kept": "Slot states as a ladder instead of on and off.",
+      "risk": "Dramatic and hard to read on cheap phones.",
+      "hero": "https://impeccable.style/worlds/cards/galaxies-nebulae-deep-time-accretion-disk-threshold-hero.webp"
+    },
+    {
+      "id": "challenger-quilt",
+      "label": "Memory Quilt",
+      "verdict": "declined",
+      "lineage": "hand-pieced quilts",
+      "thesis": "Doctors and services as stitched patches.",
+      "palette": ["#7d93b5", "#1a1a1a", "#c0392b", "#5b3a29"],
+      "materials": ["worn cloth", "stitching"],
+      "viewport": "A patchwork of services joined by stitches.",
+      "case": "Fuses poorly: busy patches hide timings and fees.",
+      "kept": "Every caption visibly joined to its block.",
+      "risk": "Cluttered on a small screen.",
+      "hero": "https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-memory-quilt-atlas-hero.webp"
+    },
+    {
+      "id": "challenger-ikeda",
+      "label": "Datamatics",
+      "verdict": "declined",
+      "lineage": "black and white data art",
+      "thesis": "The clinic as barcodes and numbers.",
+      "palette": ["#000000", "#ffffff"],
+      "materials": ["barcode bars", "monospace numbers"],
+      "viewport": "A wall of bars with timings in mono.",
+      "case": "Fuses poorly: cold and unfriendly to older patients.",
+      "kept": "Two-value contrast for text.",
+      "risk": "Alienating for families.",
+      "hero": "https://impeccable.style/worlds/cards/ikeda-datamatics-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean medical website, done very well.",
+    "palette": ["#ffffff", "#0f2a44", "#14a3a3"],
+    "materials": ["clean grid", "stock photography"],
+    "viewport": "A smiling dentist photo, a Book Appointment button, services as icon cards.",
+    "risk": "Looks like every other clinic website."
+  },
+  "steer": true
+}

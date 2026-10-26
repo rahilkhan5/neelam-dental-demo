@@ -1,0 +1,1060 @@
+---
+import { doctors } from '../data/clinic.js';
+
+const choices = [
+  { id: 'any', label: 'Any dentist', note: 'Earliest' },
+  ...doctors.map((d) => ({ id: d.id, label: d.short, note: d.tag })),
+];
+---
+
+<div class="jali" id="book">
+  <section class="board" aria-labelledby="board-title" data-board>
+    <header class="board-head">
+      <h2 id="board-title">Free times</h2>
+      <p data-board-summary>Pick a doctor, a day and a free time.</p>
+    </header>
+
+    <div class="doctor-row" role="group" aria-label="Doctor">
+      {
+        choices.map((c, i) => (
+          <button type="button" class="doctor-chip" data-doctor={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+            <span class="chip-name">{c.label}</span>
+            <span class="chip-note">{c.note}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="days" role="group" aria-label="Day" data-days></div>
+
+    <div class="slots-area">
+      <div class="slots" data-slots>
+        <p class="board-note">Loading free times…</p>
+      </div>
+      <noscript>
+        <p class="board-note">Turn on JavaScript to see free times. On a real site you could also book on WhatsApp.</p>
+      </noscript>
+    </div>
+
+    <ul class="ladder" aria-label="What the colours mean">
+      <li><span class="swatch" data-level="free"></span>Free</li>
+      <li><span class="swatch" data-level="filling"></span>Filling up</li>
+      <li><span class="swatch" data-level="last"></span>Last few</li>
+      <li><span class="swatch" data-level="full"></span>Taken</li>
+    </ul>
+
+    <form class="details" data-details hidden novalidate>
+      <h3 tabindex="-1" data-details-title>Your details</h3>
+      <p class="pick-line">
+        <span data-pick-summary></span>
+        <button type="button" class="link-button" data-change-time>Change time</button>
+      </p>
+      <div class="field">
+        <label for="patient-name">Patient’s name</label>
+        <input id="patient-name" name="name" autocomplete="name" aria-describedby="name-error" />
+        <p class="field-error" id="name-error" data-error-for="name"></p>
+      </div>
+      <div class="field">
+        <label for="patient-mobile">Mobile number</label>
+        <input
+          id="patient-mobile"
+          name="mobile"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="03XX XXXXXXX"
+          aria-describedby="mobile-error mobile-help"
+        />
+        <p class="field-help" id="mobile-help">The clinic confirms on WhatsApp.</p>
+        <p class="field-error" id="mobile-error" data-error-for="mobile"></p>
+      </div>
+      <div class="field">
+        <label for="visit-reason">Reason for the visit</label>
+        <select id="visit-reason" name="reason" data-reasons></select>
+      </div>
+      <button class="button confirm" type="submit">Confirm booking</button>
+      <p class="demo-line">Demo: what you type stays on this page. Nothing is sent.</p>
+    </form>
+
+    <div class="token" data-token hidden tabindex="-1" aria-labelledby="token-title">
+      <h3 class="token-number" id="token-title" data-token-number></h3>
+      <dl class="token-facts">
+        <div><dt>Day</dt><dd data-token-day></dd></div>
+        <div><dt>Time</dt><dd data-token-time></dd></div>
+        <div><dt>Doctor</dt><dd data-token-doctor></dd></div>
+        <div><dt>Fee</dt><dd data-token-fee></dd></div>
+      </dl>
+      <p class="token-note">
+        You are booked. Please come 10 minutes early. On a real site you would now get this token on WhatsApp. This
+        is a demo, so nothing was sent.
+      </p>
+      <button type="button" class="button button-quiet" data-book-again>Book another time</button>
+    </div>
+
+    <p class="visually-hidden" aria-live="polite" data-live></p>
+  </section>
+</div>
+
+<script>
+  import { doctors } from '../data/clinic.js';
+
+  const TZ = 'Asia/Karachi';
+  const SLOT = 20;
+  const DAYS_SHOWN = 6;
+  const DENTISTS = doctors.filter((d) => d.kind === 'dentist');
+  const byId = Object.fromEntries(doctors.map((d) => [d.id, d]));
+  const REASONS = {
+    dentist: ['Checkup', 'Tooth pain', 'Cleaning (scaling)', 'Filling', 'Braces or aligners', 'Tooth removal', 'Something else'],
+    family: ['Fever or cough', 'Blood pressure or sugar check', 'Child visit', 'Something else'],
+  };
+  const LEVEL_TEXT = { free: 'Free', filling: 'Filling up', last: 'Last few', full: 'Full', off: 'Not in', closed: 'Closed' };
+
+  const board = document.querySelector('[data-board]');
+  const daysEl = board.querySelector('[data-days]');
+  const slotsEl = board.querySelector('[data-slots]');
+  const summaryEl = board.querySelector('[data-board-summary]');
+  const form = board.querySelector('[data-details]');
+  const token = board.querySelector('[data-token]');
+  const live = board.querySelector('[data-live]');
+  const reasonSelect = board.querySelector('[data-reasons]');
+
+  const state = { doctor: 'any', dayIndex: 0, pick: null, booked: new Map() };
+
+  function pakistanNow() {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: TZ,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (type) => Number(parts.find((p) => p.type === type).value);
+    return { date: new Date(Date.UTC(get('year'), get('month') - 1, get('day'))), minutes: get('hour') * 60 + get('minute') };
+  }
+
+  const dayFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' });
+  const longDayFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long' });
+  const parts = (date) => {
+    const p = dayFormat.formatToParts(date);
+    const get = (type) => p.find((x) => x.type === type).value;
+    return { weekday: get('weekday'), day: get('day'), month: get('month') };
+  };
+
+  function clock(minutes) {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    const suffix = h >= 12 ? 'pm' : 'am';
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return `${h12}:${String(m).padStart(2, '0')} ${suffix}`;
+  }
+
+  // Stable made-up bookings: the same day and doctor always look the same.
+  function hash(text) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i += 1) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0) / 4294967295;
+  }
+
+  function takenByOthers(key, doctorId, minutes, ahead) {
+    const base = [0.6, 0.55, 0.48, 0.4, 0.33, 0.28][Math.min(ahead, 5)];
+    const evening = minutes >= 1140 && minutes < 1260 ? 0.12 : 0;
+    return hash(`${key}|${doctorId}|${minutes}`) < base + evening;
+  }
+
+  const now = pakistanNow();
+  const days = [];
+  for (let offset = 0; days.length < DAYS_SHOWN; offset += 1) {
+    const date = new Date(now.date.getTime() + offset * 86400000);
+    if (date.getUTCDay() === 0) continue;
+    days.push({ date, key: date.toISOString().slice(0, 10), weekday: date.getUTCDay(), ahead: offset });
+  }
+
+  function doctorSlots(doctor, day) {
+    const s = doctor.schedule;
+    if (!s.days.includes(day.weekday)) return null;
+    const end = day.weekday === 5 && s.fridayTo ? s.fridayTo : s.to;
+    const list = [];
+    for (let t = s.from; t + SLOT <= end; t += SLOT) {
+      if (day.ahead === 0 && t <= now.minutes + 10) continue;
+      const mine = state.booked.get(`${day.key}|${doctor.id}|${t}`);
+      list.push({ t, doctor: doctor.id, taken: Boolean(mine) || takenByOthers(day.key, doctor.id, t, day.ahead), mine: Boolean(mine) });
+    }
+    return list;
+  }
+
+  // "Any dentist": a time is free when any dentist working that day has it free.
+  function slotsFor(choice, day) {
+    if (choice !== 'any') return doctorSlots(byId[choice], day);
+    const merged = new Map();
+    let working = false;
+    for (const d of DENTISTS) {
+      const list = doctorSlots(d, day);
+      if (!list) continue;
+      working = true;
+      for (const slot of list) {
+        const seen = merged.get(slot.t);
+        if (!seen || (!seen.mine && ((seen.taken && !slot.taken) || slot.mine))) merged.set(slot.t, slot);
+      }
+    }
+    if (!working) return null;
+    return [...merged.values()].sort((a, b) => a.t - b.t);
+  }
+
+  // For one doctor the ladder reads that doctor's day; for "any dentist" it
+  // reads how full all the dentists are together.
+  function level(choice, day, list) {
+    if (list === null) return 'off';
+    if (list.length === 0) return 'closed';
+    let total = list.length;
+    let free = list.filter((s) => !s.taken).length;
+    if (choice === 'any') {
+      const all = DENTISTS.map((d) => doctorSlots(d, day)).filter(Boolean).flat();
+      total = all.length;
+      free = all.filter((s) => !s.taken).length;
+    }
+    if (free === 0) return 'full';
+    if (free <= 3) return 'last';
+    if (free / total < 0.6) return 'filling';
+    return 'free';
+  }
+
+  function tokenNumber(doctor, day, t) {
+    let before = 0;
+    for (let m = doctor.schedule.from; m < t; m += SLOT) {
+      if (takenByOthers(day.key, doctor.id, m, day.ahead) || state.booked.has(`${day.key}|${doctor.id}|${m}`)) before += 1;
+    }
+    return before + 1;
+  }
+
+  function dayName(day) {
+    if (day.ahead === 0) return 'Today';
+    if (day.ahead === 1) return 'Tomorrow';
+    return parts(day.date).weekday;
+  }
+
+  function choiceLabel(choice) {
+    return choice === 'any' ? 'any dentist' : byId[choice].name;
+  }
+
+  function renderDays() {
+    daysEl.replaceChildren(
+      ...days.map((day, i) => {
+        const list = slotsFor(state.doctor, day);
+        const lv = level(state.doctor, day, list);
+        const p = parts(day.date);
+        const free = list ? list.filter((s) => !s.taken).length : 0;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'day';
+        b.dataset.level = lv;
+        b.dataset.index = String(i);
+        b.setAttribute('aria-pressed', String(i === state.dayIndex));
+        b.setAttribute('aria-label', `${dayName(day)}, ${longDayFormat.format(day.date)}: ${lv === 'off' || lv === 'closed' || lv === 'full' ? LEVEL_TEXT[lv].toLowerCase() : `${free} free`}`);
+        b.innerHTML = `<span class="day-name">${dayName(day)}</span><span class="day-date">${p.day} ${p.month}</span><span class="day-level">${lv === 'last' && free === 1 ? 'Last one' : LEVEL_TEXT[lv]}</span>`;
+        return b;
+      }),
+    );
+  }
+
+  function renderSlots({ announce = false } = {}) {
+    const day = days[state.dayIndex];
+    const list = slotsFor(state.doctor, day);
+    const when = day.ahead < 2 ? dayName(day).toLowerCase() : `on ${longDayFormat.format(day.date)}`;
+    slotsEl.replaceChildren();
+
+    if (list === null) {
+      const d = byId[state.doctor];
+      slotsEl.append(note(`${d.short} is not in ${when}. ${d.short} sees patients ${d.days}, ${d.time}.`));
+      summaryEl.textContent = `${d.name} is not in ${when}.`;
+      if (announce) live.textContent = summaryEl.textContent;
+      return;
+    }
+    if (list.length === 0) {
+      slotsEl.append(note('No more times today. Pick another day.'));
+      summaryEl.textContent = 'Today is over. Pick another day.';
+      if (announce) live.textContent = summaryEl.textContent;
+      return;
+    }
+
+    const free = list.filter((s) => !s.taken).length;
+    let firstFree = true;
+    for (const slot of list) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'slot';
+      b.dataset.t = String(slot.t);
+      b.dataset.doctor = slot.doctor;
+      const picked = state.pick && state.pick.key === day.key && state.pick.t === slot.t;
+      if (slot.mine) {
+        b.classList.add('mine');
+        b.disabled = true;
+        b.innerHTML = `<span class="slot-time">${clock(slot.t)}</span><span class="slot-tag">Yours</span>`;
+        b.setAttribute('aria-label', `${clock(slot.t)}, booked by you`);
+      } else if (slot.taken) {
+        b.classList.add('taken');
+        b.disabled = true;
+        b.innerHTML = `<span class="slot-time">${clock(slot.t)}</span><span class="slot-tag">Taken</span>`;
+        b.setAttribute('aria-label', `${clock(slot.t)}, taken`);
+      } else if (firstFree) {
+        b.classList.add('first');
+        b.innerHTML = `<span class="slot-tag">Earliest</span><span class="slot-time">${clock(slot.t)}</span><span class="slot-book">Book<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+        b.setAttribute('aria-label', `Book ${clock(slot.t)}, the earliest free time`);
+        b.setAttribute('aria-pressed', String(Boolean(picked)));
+        firstFree = false;
+      } else {
+        b.innerHTML = `<span class="slot-time">${clock(slot.t)}</span>`;
+        b.setAttribute('aria-label', `Book ${clock(slot.t)}`);
+        b.setAttribute('aria-pressed', String(Boolean(picked)));
+      }
+      slotsEl.append(b);
+    }
+    if (free === 0) slotsEl.prepend(note(`Every time is taken ${when}. Pick another day.`));
+    summaryEl.textContent = free
+      ? `${free} free ${free === 1 ? 'time' : 'times'} ${when} with ${choiceLabel(state.doctor)}.`
+      : `No free times ${when} with ${choiceLabel(state.doctor)}.`;
+    if (announce) live.textContent = summaryEl.textContent;
+  }
+
+  function note(text) {
+    const p = document.createElement('p');
+    p.className = 'board-note';
+    p.textContent = text;
+    return p;
+  }
+
+  function firstOpenDay() {
+    const i = days.findIndex((day) => {
+      const list = slotsFor(state.doctor, day);
+      return list && list.some((s) => !s.taken);
+    });
+    return i === -1 ? 0 : i;
+  }
+
+  function setDoctor(choice, { keepDay = false } = {}) {
+    state.doctor = choice;
+    board.querySelectorAll('.doctor-chip').forEach((chip) => chip.setAttribute('aria-pressed', String(chip.dataset.doctor === choice)));
+    if (!keepDay) state.dayIndex = firstOpenDay();
+    clearPick();
+    renderDays();
+    renderSlots({ announce: true });
+  }
+
+  function clearPick() {
+    state.pick = null;
+    form.hidden = true;
+    clearErrors();
+  }
+
+  function pickSlot(button) {
+    const day = days[state.dayIndex];
+    const t = Number(button.dataset.t);
+    const doctor = byId[button.dataset.doctor];
+    state.pick = { key: day.key, day, t, doctor };
+    slotsEl.querySelectorAll('.slot[aria-pressed]').forEach((s) => s.setAttribute('aria-pressed', String(s === button)));
+    button.classList.remove('glazing');
+    void button.offsetWidth;
+    button.classList.add('glazing');
+
+    const reasons = REASONS[doctor.kind];
+    if (reasonSelect.dataset.kind !== doctor.kind) {
+      reasonSelect.replaceChildren(...reasons.map((r) => new Option(r, r)));
+      reasonSelect.dataset.kind = doctor.kind;
+    }
+    board.querySelector('[data-pick-summary]').textContent =
+      `${dayName(day)}, ${longDayFormat.format(day.date)} at ${clock(t)} with ${doctor.name}. Fee Rs ${doctor.fee.toLocaleString('en-PK')}.`;
+    token.hidden = true;
+    form.hidden = false;
+    live.textContent = `${clock(t)} picked. Now add the patient’s name and mobile number.`;
+    const title = form.querySelector('[data-details-title]');
+    form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    title.focus({ preventScroll: true });
+  }
+
+  const MOBILE = /^(\+92|0092|92|0)?\s?3\d{2}[\s-]?\d{7}$/;
+
+  function clearErrors() {
+    form.querySelectorAll('[data-error-for]').forEach((p) => (p.textContent = ''));
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+  }
+
+  function showError(name, text) {
+    form.querySelector(`[data-error-for="${name}"]`).textContent = text;
+    form.elements[name].setAttribute('aria-invalid', 'true');
+  }
+
+  form.addEventListener('input', (event) => {
+    const name = event.target.name;
+    if (!name || !event.target.hasAttribute('aria-invalid')) return;
+    event.target.removeAttribute('aria-invalid');
+    const error = form.querySelector(`[data-error-for="${name}"]`);
+    if (error) error.textContent = '';
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    clearErrors();
+    const name = form.elements.name.value.trim();
+    const mobile = form.elements.mobile.value.trim();
+    let first = null;
+    if (name.length < 2) {
+      showError('name', 'Write the patient’s name.');
+      first ??= form.elements.name;
+    }
+    if (!MOBILE.test(mobile)) {
+      showError('mobile', 'Write a Pakistani mobile number, like 03XX XXXXXXX.');
+      first ??= form.elements.mobile;
+    }
+    if (first) {
+      first.focus();
+      return;
+    }
+    if (!state.pick) return;
+
+    const { day, t, doctor } = state.pick;
+    const number = tokenNumber(doctor, day, t);
+    state.booked.set(`${day.key}|${doctor.id}|${t}`, true);
+
+    token.querySelector('[data-token-number]').textContent = `Token ${String(number).padStart(2, '0')}`;
+    token.querySelector('[data-token-day]').textContent = `${dayName(day)}, ${longDayFormat.format(day.date)}`;
+    token.querySelector('[data-token-time]').textContent = clock(t);
+    token.querySelector('[data-token-doctor]').textContent = doctor.name;
+    token.querySelector('[data-token-fee]').textContent = `Rs ${doctor.fee.toLocaleString('en-PK')}, paid at the clinic`;
+
+    form.reset();
+    form.hidden = true;
+    state.pick = null;
+    renderDays();
+    renderSlots();
+    token.hidden = false;
+    token.classList.remove('stamped');
+    void token.offsetWidth;
+    token.classList.add('stamped');
+    token.focus({ preventScroll: true });
+    token.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    live.textContent = `Booked. ${token.querySelector('[data-token-number]').textContent}, ${clock(t)} with ${doctor.name}. Demo only, nothing was sent.`;
+  });
+
+  board.addEventListener('click', (event) => {
+    const chip = event.target.closest('.doctor-chip');
+    if (chip) return setDoctor(chip.dataset.doctor);
+    const day = event.target.closest('.day');
+    if (day) {
+      state.dayIndex = Number(day.dataset.index);
+      clearPick();
+      renderDays();
+      renderSlots({ announce: true });
+      return;
+    }
+    const slot = event.target.closest('.slot');
+    if (slot && !slot.disabled) return pickSlot(slot);
+    if (event.target.closest('[data-change-time]')) {
+      const picked = slotsEl.querySelector('.slot[aria-pressed="true"]') || slotsEl.querySelector('.slot:not(:disabled)');
+      picked?.focus();
+      picked?.scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (event.target.closest('[data-book-again]')) {
+      token.hidden = true;
+      const next = slotsEl.querySelector('.slot:not(:disabled)');
+      next?.focus();
+    }
+  });
+
+  // Links elsewhere on the page: "Book a visit" and "Book with Dr. ...".
+  document.addEventListener('click', (event) => {
+    const start = event.target.closest('[data-book-start]');
+    const withDoctor = event.target.closest('[data-book-doctor]');
+    if (!start && !withDoctor) return;
+    event.preventDefault();
+    if (withDoctor) setDoctor(withDoctor.dataset.bookDoctor);
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    board.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    const target = withDoctor
+      ? board.querySelector(`.doctor-chip[data-doctor="${withDoctor.dataset.bookDoctor}"]`)
+      : slotsEl.querySelector('.slot:not(:disabled)');
+    target?.focus({ preventScroll: true });
+  });
+
+  state.dayIndex = firstOpenDay();
+  renderDays();
+  renderSlots();
+</script>
+
+<style>
+  /* A marble jali screen around the board; light shows through its stars. */
+  .jali {
+    padding: 28px;
+    border-radius: 10px;
+    background:
+      var(--jali-pattern),
+      radial-gradient(120% 90% at 30% 15%, #f2fbf9 0%, #9fd9d1 50%, var(--turq-edge) 100%);
+    background-size: 28px 28px, 100% 100%;
+    background-position: 0 0, 0 0;
+    box-shadow: inset 0 0 0 1px rgb(23 43 107 / 0.18), var(--shadow-lift);
+    scroll-margin-top: var(--space-4);
+  }
+
+  .board {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--grout-strong);
+    border-radius: var(--radius-small);
+    background: var(--glaze-raised);
+    scroll-margin-top: var(--space-4);
+  }
+
+  /* The screen's light falls across the top of the board and fades. */
+  .board::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 220px;
+    z-index: -1;
+    background: var(--jali-light);
+    background-size: 56px 56px;
+    background-position: 8px -14px;
+    opacity: 0.32;
+    -webkit-mask-image: linear-gradient(to bottom, currentColor 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, currentColor 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .board-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--grout);
+  }
+
+  .board-head h2 {
+    font-size: var(--step-2);
+  }
+
+  .board-head p {
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .doctor-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .doctor-chip {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    display: grid;
+    gap: 0;
+    min-height: 48px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--grout-strong);
+    border-radius: var(--radius-tile);
+    background: #fff;
+    text-align: left;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      transform 140ms var(--ease-out);
+  }
+
+  .doctor-chip:hover {
+    border-color: var(--turq-edge);
+  }
+
+  .doctor-chip:active {
+    transform: scale(0.97);
+  }
+
+  .doctor-chip[aria-pressed='true'] {
+    border: 2px solid var(--lapis);
+    padding: calc(var(--space-2) - 1px) calc(var(--space-3) - 1px);
+    background: var(--turq-glaze-1);
+  }
+
+  .chip-name {
+    font-weight: 700;
+  }
+
+  .chip-note {
+    font-size: var(--step--1);
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .days :global(.day) {
+    display: grid;
+    justify-items: center;
+    gap: 1px;
+    min-height: 76px;
+    padding: var(--space-2) var(--space-1);
+    border: 1px solid var(--turq-edge);
+    border-radius: var(--radius-tile);
+    line-height: 1.15;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), inset 0 -2px 0 rgb(23 43 107 / 0.08);
+    transition: transform 140ms var(--ease-out);
+  }
+
+  .days :global(.day:active) {
+    transform: scale(0.97);
+  }
+
+  .days :global(.day[data-level='free']) {
+    background: linear-gradient(170deg, #eefaf8 0%, var(--turq-glaze-3) 100%);
+  }
+
+  .days :global(.day[data-level='filling']) {
+    background: linear-gradient(170deg, #f7fcfb 0%, var(--turq-glaze-1) 100%);
+  }
+
+  .days :global(.day[data-level='last']) {
+    border-color: var(--ochre-edge);
+    background: linear-gradient(170deg, var(--glaze-raised) 0%, var(--ochre-glaze) 100%);
+  }
+
+  .days :global(.day[data-level='full']) {
+    border-color: var(--brick-edge);
+    background: var(--brick-matte);
+    box-shadow: none;
+  }
+
+  .days :global(.day[data-level='off']),
+  .days :global(.day[data-level='closed']) {
+    border: 1px dashed var(--grout-strong);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .days :global(.day[aria-pressed='true']) {
+    outline: 2px solid var(--lapis);
+    outline-offset: 2px;
+  }
+
+  .days :global(.day[aria-pressed='true']:focus-visible) {
+    outline: 3px solid var(--focus);
+  }
+
+  .days :global(.day-name) {
+    font-weight: 700;
+    font-size: var(--step--1);
+  }
+
+  .days :global(.day-date) {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+
+  .days :global(.day-level) {
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+    min-height: 120px;
+    align-content: start;
+  }
+
+  .slots :global(.board-note),
+  .board-note {
+    grid-column: 1 / -1;
+    padding: var(--space-3) var(--space-4);
+    border: 1px dashed var(--grout-strong);
+    border-radius: var(--radius-tile);
+    font-weight: 600;
+  }
+
+  .slots :global(.slot) {
+    position: relative;
+    display: grid;
+    place-content: center;
+    gap: 0;
+    min-height: 54px;
+    padding: var(--space-2);
+    overflow: hidden;
+    border: 1px solid var(--turq-edge);
+    border-radius: var(--radius-tile);
+    background: linear-gradient(165deg, #f4fbfa 0%, var(--turq-glaze-2) 62%, var(--turq-glaze-3) 100%);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      inset 0 -2px 0 rgb(31 154 149 / 0.2),
+      var(--shadow-tile);
+    font-weight: 700;
+    line-height: 1.15;
+    cursor: pointer;
+    transition:
+      transform 140ms var(--ease-out),
+      box-shadow 200ms var(--ease-out);
+  }
+
+  .slots :global(.slot::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 28%, rgb(255 255 255 / 0.85) 48%, transparent 68%);
+    transform: translateX(-130%);
+    pointer-events: none;
+  }
+
+  .slots :global(.slot:not(:disabled):hover) {
+    box-shadow:
+      inset 0 1px 0 #fff,
+      inset 0 -2px 0 rgb(31 154 149 / 0.2),
+      var(--shadow-lift);
+  }
+
+  .slots :global(.slot:not(:disabled):active) {
+    transform: scale(0.97);
+  }
+
+  .slots :global(.slot[aria-pressed='true']) {
+    border: 2px solid var(--lapis);
+    background: linear-gradient(165deg, var(--turq-glaze-2) 0%, var(--turq-glaze-3) 55%, var(--turq-edge) 100%);
+  }
+
+  .slots :global(.slot.glazing::after) {
+    animation: glaze 720ms var(--ease-out);
+  }
+
+  @keyframes glaze {
+    from {
+      transform: translateX(-130%);
+    }
+    to {
+      transform: translateX(130%);
+    }
+  }
+
+  .slots :global(.slot-tag) {
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .slots :global(.slot.taken),
+  .slots :global(.slot.mine) {
+    cursor: not-allowed;
+    box-shadow: none;
+    font-weight: 400;
+  }
+
+  .slots :global(.slot.taken) {
+    border-color: var(--brick-edge);
+    background: var(--brick-matte);
+  }
+
+  .slots :global(.slot.taken .slot-time) {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+
+  .slots :global(.slot.mine) {
+    border: 2px solid var(--lapis);
+    background: var(--glaze-raised);
+    font-weight: 700;
+  }
+
+  .slots :global(.slot.first) {
+    grid-column: span 2;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    place-content: stretch;
+    gap: var(--space-3);
+    padding-inline: var(--space-4);
+    text-align: left;
+  }
+
+  .slots :global(.slot.first .slot-time) {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--step-1);
+  }
+
+  .slots :global(.slot-book) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .slots :global(.slot-book svg) {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ladder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+  }
+
+  .ladder li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-small);
+    border: 1px solid var(--turq-edge);
+  }
+
+  .swatch[data-level='free'] {
+    background: var(--turq-glaze-3);
+  }
+
+  .swatch[data-level='filling'] {
+    background: var(--turq-glaze-1);
+  }
+
+  .swatch[data-level='last'] {
+    border-color: var(--ochre-edge);
+    background: var(--ochre-glaze);
+  }
+
+  .swatch[data-level='full'] {
+    border-color: var(--brick-edge);
+    background: var(--brick-matte);
+  }
+
+  .details {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--grout);
+    scroll-margin: var(--space-5);
+  }
+
+  .details h3:focus {
+    outline: none;
+  }
+
+  .pick-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+    font-weight: 600;
+  }
+
+  .link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--lapis);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .field label {
+    font-weight: 700;
+  }
+
+  .field input,
+  .field select {
+    min-height: 48px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--grout-strong);
+    border-radius: var(--radius-tile);
+    background: #fff;
+    box-shadow: inset 0 1px 2px rgb(23 43 107 / 0.08);
+    caret-color: var(--turq);
+    transition: border-color 160ms ease;
+  }
+
+  .field input:hover,
+  .field select:hover {
+    border-color: var(--turq-edge);
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+    border-color: var(--lapis);
+  }
+
+  .field input[aria-invalid='true'] {
+    border: 2px solid var(--brick);
+  }
+
+  .field-help {
+    font-size: var(--step--1);
+  }
+
+  .field-error {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--brick);
+  }
+
+  .field-error:empty {
+    display: none;
+  }
+
+  .confirm {
+    justify-self: start;
+    min-width: 14rem;
+  }
+
+  .demo-line {
+    font-size: var(--step--1);
+  }
+
+  /* The one solid lapis moment: the confirmed token. */
+  .token {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    border-radius: var(--radius-tile);
+    background: var(--lapis);
+    color: var(--glaze-raised);
+    -webkit-mask: radial-gradient(circle 6px at 9px 0, transparent 98%, currentColor) -9px 0 / 18px 100% repeat-x;
+    mask: radial-gradient(circle 6px at 9px 0, transparent 98%, currentColor) -9px 0 / 18px 100% repeat-x;
+  }
+
+  .token:focus {
+    outline: none;
+  }
+
+  .token.stamped {
+    animation: stamp 460ms var(--ease-out);
+  }
+
+  @keyframes stamp {
+    from {
+      clip-path: inset(0 0 100% 0);
+      transform: translateY(-6px);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      transform: none;
+    }
+  }
+
+  .token-number {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--step-4);
+    line-height: 1;
+  }
+
+  .token-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-5);
+    margin: 0;
+    padding: var(--space-4) 0;
+    border-block: 1px solid rgb(252 253 250 / 0.35);
+  }
+
+  .token-facts dt {
+    font-size: var(--step--1);
+  }
+
+  .token-facts dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .token-note {
+    max-width: 34rem;
+  }
+
+  .token .button {
+    justify-self: start;
+  }
+
+  .token :focus-visible {
+    outline-color: var(--ochre-glaze);
+  }
+
+  @media (max-width: 640px) {
+    .jali {
+      padding: 20px;
+      background-size: 20px 20px, 100% 100%;
+    }
+
+    .board::before {
+      background-size: 40px 40px;
+    }
+
+    .board {
+      padding: var(--space-4);
+    }
+
+    .doctor-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .doctor-chip {
+      min-height: 44px;
+      padding: 6px var(--space-3);
+    }
+
+    .doctor-chip[aria-pressed='true'] {
+      padding: 5px calc(var(--space-3) - 1px);
+    }
+
+    .doctor-chip:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .chip-note {
+      font-size: var(--step--1);
+    }
+
+    .days {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .slots {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .slots :global(.slot.first) {
+      grid-column: 1 / -1;
+    }
+
+    .confirm {
+      justify-self: stretch;
+    }
+
+    .token-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

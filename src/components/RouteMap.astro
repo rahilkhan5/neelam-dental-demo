@@ -1,0 +1,104 @@
+---
+// A drawn map with one route only: from Liberty Chowk to the clinic door.
+// The streets are simplified and made up for the demo.
+---
+
+<figure class="map">
+  <svg viewBox="0 0 640 380" role="img" aria-labelledby="map-title map-desc">
+    <title id="map-title">Route from Liberty Chowk to Neelam Clinic</title>
+    <desc id="map-desc">
+      From Liberty Chowk, walk east on Main Boulevard for about 300 metres, turn left into Kashi Lane, and the clinic
+      door is the second building on the right.
+    </desc>
+    <rect width="640" height="380" fill="#fcfdfa" />
+    <g fill="#eef3ee" stroke="#c7d1ca">
+      <rect x="40" y="40" width="150" height="110" rx="6" />
+      <rect x="250" y="40" width="160" height="110" rx="6" />
+      <rect x="470" y="40" width="140" height="110" rx="6" />
+      <rect x="250" y="250" width="160" height="100" rx="6" />
+      <rect x="470" y="250" width="140" height="100" rx="6" />
+      <rect x="40" y="250" width="110" height="100" rx="6" />
+    </g>
+    <g stroke="#dfe6e0" stroke-width="34" stroke-linecap="round" fill="none">
+      <path d="M0 200H640" />
+      <path d="M440 200V20" />
+      <path d="M220 0V380" />
+    </g>
+    <g stroke="#c7d1ca" stroke-width="1" fill="none">
+      <path d="M0 183H120M0 217H120M164 183H203M164 217H203M237 183H423M237 217H640M457 183H640" />
+      <path d="M423 183V20M457 183V20M203 0V140M237 0V140M203 260V380M237 260V380" />
+    </g>
+    <circle cx="140" cy="200" r="44" fill="#dfe6e0" stroke="#c7d1ca" />
+    <circle cx="140" cy="200" r="20" fill="#eef3ee" stroke="#c7d1ca" />
+
+    <path
+      class="route"
+      d="M140 200H440V92"
+      fill="none"
+      stroke="#1d3a8a"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-dasharray="1 11"
+    />
+    <circle cx="140" cy="200" r="8" fill="#fcfdfa" stroke="#1d3a8a" stroke-width="3" />
+
+    <g transform="translate(456 70)">
+      <rect width="44" height="44" rx="4" fill="#fcfdfa" stroke="#1d3a8a" stroke-width="2" />
+      <polygon
+        points="22,6 26.3,13.4 34.7,11.3 32.6,19.7 40,24 32.6,28.3 34.7,36.7 26.3,34.6 22,42 17.7,34.6 9.3,36.7 11.4,28.3 4,24 11.4,19.7 9.3,11.3 17.7,13.4"
+        transform="translate(0 -2)"
+        fill="#1d3a8a"
+      />
+      <circle cx="22" cy="22" r="4" fill="#c9922e" />
+    </g>
+
+    <g font-family="Hind, Segoe UI, sans-serif" fill="#172b6b">
+      <text x="140" y="268" text-anchor="middle" font-size="17" font-weight="700">Liberty Chowk</text>
+      <text x="140" y="288" text-anchor="middle" font-size="14">start here</text>
+      <text x="330" y="238" text-anchor="middle" font-size="14" font-weight="600">Main Boulevard</text>
+      <text x="415" y="30" text-anchor="end" font-size="14" font-weight="600">Kashi Lane</text>
+      <text x="508" y="88" font-size="17" font-weight="700">Neelam Clinic</text>
+      <text x="508" y="108" font-size="14">2nd door on the right</text>
+      <text x="115" y="100" text-anchor="middle" font-size="14">Liberty Market</text>
+      <text x="330" y="305" text-anchor="middle" font-size="14">Bank and pharmacy</text>
+    </g>
+  </svg>
+  <figcaption>Map drawn for the demo. On a real site, Directions opens Google Maps.</figcaption>
+</figure>
+
+<style>
+  .map {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--grout-strong);
+    border-radius: var(--radius-tile);
+    background: var(--glaze-raised);
+  }
+
+  figcaption {
+    font-size: var(--step--1);
+  }
+
+  .route {
+    animation: walk 1.6s linear infinite;
+  }
+
+  @keyframes walk {
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .route {
+      animation: none;
+    }
+  }
+</style>

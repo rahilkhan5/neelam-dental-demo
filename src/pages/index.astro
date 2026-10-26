@@ -1,0 +1,1180 @@
+---
+import '../styles/global.css';
+import Booking from '../components/Booking.astro';
+import RouteMap from '../components/RouteMap.astro';
+import TileMark from '../components/TileMark.astro';
+import Icon from '../components/Icon.astro';
+import { clinic, hours, doctors, services, reviews, faqs } from '../data/clinic.js';
+
+const WEEK = [
+  { day: 1, short: 'Mon' },
+  { day: 2, short: 'Tue' },
+  { day: 3, short: 'Wed' },
+  { day: 4, short: 'Thu' },
+  { day: 5, short: 'Fri' },
+  { day: 6, short: 'Sat' },
+];
+
+const title = `${clinic.name}, ${clinic.area} (demo website)`;
+const description =
+  'A demo clinic website: see free times, book a dentist or family doctor in a minute, and find fees, timings and directions. The clinic is made up.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#f5f7f2" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/rozha-one-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hind-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="skip" href="#book">Skip to free times</a>
+    <aside class="demo-strip" aria-label="Demo notice">
+      <p><strong>Demo website.</strong> Neelam Clinic, its doctors, fees and reviews are made up. Nothing you type is sent.</p>
+    </aside>
+
+    <header class="site-header page">
+      <a class="brand" href="#top" aria-label={`${clinic.name}, back to top`}>
+        <span class="brand-tile"><TileMark size={46} /></span>
+        <span class="brand-words">
+          <span class="brand-name">Neelam</span>
+          <span class="brand-sub">Dental &amp; Family Clinic</span>
+        </span>
+        <span class="brand-urdu" lang="ur" dir="rtl">{clinic.urduName}</span>
+      </a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#fees">Fees</a>
+        <a href="#doctors">Doctors</a>
+        <a href="#timings">Timings</a>
+        <a href="#find-us">Find us</a>
+      </nav>
+      <a class="button header-book" href="#book" data-book-start>Book a visit</a>
+    </header>
+
+    <main id="top">
+      <section class="hero page" aria-labelledby="hero-title">
+        <div class="hero-intro">
+          <h1 id="hero-title">Book your dentist in Gulberg without a phone call.</h1>
+          <p class="lede">See the free times, pick one, and your token is ready in under a minute.</p>
+        </div>
+        <div class="hero-board">
+          <Booking />
+        </div>
+        <div class="hero-details">
+          <ul class="facts">
+            <li>
+              <span class="fact-icon"><Icon name="clock" /></span>
+              <span>
+                <strong data-open-status>Open Monday to Saturday</strong>
+                <span class="fact-detail">Mornings 10 am to 1 pm, evenings 5 pm to 10 pm</span>
+              </span>
+            </li>
+            <li>
+              <span class="fact-icon"><Icon name="pin" /></span>
+              <span>
+                <strong>Kashi Lane, Gulberg III</strong>
+                <span class="fact-detail">6 minutes on foot from Liberty Chowk</span>
+              </span>
+            </li>
+            <li>
+              <span class="fact-icon"><Icon name="cash" /></span>
+              <span>
+                <strong>Dental checkup Rs 2,000</strong>
+                <span class="fact-detail">Family doctor visit Rs 1,500. Every fee is listed below.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section page" id="fees" aria-labelledby="fees-title">
+        <div class="section-head">
+          <h2 id="fees-title">Fees, written down before you sit in the chair</h2>
+          <p>Every price is on this page, so there are no surprises at the counter. These fees are examples for the demo.</p>
+        </div>
+        <div class="fee-boards">
+          {
+            [
+              { title: 'Teeth', list: services.teeth },
+              { title: 'Family doctor', list: services.family },
+            ].map((group) => (
+              <section class="fee-board" aria-label={`${group.title} fees`}>
+                <h3 class="fee-title">
+                  <TileMark size={34} />
+                  {group.title}
+                </h3>
+                <ul class="fee-list">
+                  {group.list.map((item) => (
+                    <li class="fee-row">
+                      <span class="fee-name">
+                        {item.name}
+                        {item.note && <span class="fee-note">{item.note}</span>}
+                      </span>
+                      <span class="grout" aria-hidden="true" />
+                      <span class="fee">{item.fee}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section page" id="doctors" aria-labelledby="doctors-title">
+        <div class="section-head">
+          <h2 id="doctors-title">Four doctors, one front desk</h2>
+          <p>Three dentists in the evening, after office hours, and a family doctor every morning.</p>
+        </div>
+        <ul class="wall">
+          {
+            doctors.map((d) => (
+              <li class="doc">
+                <div class="doc-head">
+                  <TileMark size={48} initials={d.initials} />
+                  <div class="doc-name">
+                    <h3>{d.name}</h3>
+                    <p class="doc-degrees">{d.degrees}</p>
+                  </div>
+                </div>
+                <p class="doc-role">{d.role}</p>
+                <p class="doc-sees">{d.sees}</p>
+                <div class="week" role="img" aria-label={`In on ${d.days}`}>
+                  {WEEK.map((w) => (
+                    <span class="week-day" data-in={d.schedule.days.includes(w.day) ? 'yes' : 'no'}>
+                      {w.short}
+                    </span>
+                  ))}
+                </div>
+                <dl class="doc-facts">
+                  <div>
+                    <dt>Time</dt>
+                    <dd>{d.time}</dd>
+                  </div>
+                  <div>
+                    <dt>Fee</dt>
+                    <dd>Rs {d.fee.toLocaleString('en-PK')}</dd>
+                  </div>
+                </dl>
+                <a class="button button-quiet doc-book" href="#book" data-book-doctor={d.id}>
+                  Book with {d.short}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="section page" id="timings" aria-labelledby="timings-title">
+        <div class="section-head">
+          <h2 id="timings-title">Open six days, until 10 at night</h2>
+          <p>Come in the morning for the family doctor, or after work for the dentists.</p>
+        </div>
+        <div class="timings">
+          <figure class="room">
+            <img
+              src="/photos/clinic-room-1400.webp"
+              srcset="/photos/clinic-room-800.webp 800w, /photos/clinic-room-1400.webp 1400w"
+              sizes="(min-width: 960px) 560px, 100vw"
+              width="1400"
+              height="935"
+              alt="A bright dental treatment room with a white and turquoise chair."
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>Treatment room. Stock photo for the demo.</figcaption>
+          </figure>
+          <div class="hours">
+            <table>
+              <caption class="visually-hidden">Clinic timings</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Day</th>
+                  <th scope="col">Morning</th>
+                  <th scope="col">Evening</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  hours.map((h) => (
+                    <tr data-day={h.day}>
+                      <th scope="row">
+                        {h.name}
+                        <span class="today-tag" hidden>
+                          Today
+                        </span>
+                      </th>
+                      {h.morning ? (
+                        <>
+                          <td>{h.morning}</td>
+                          <td>{h.evening}</td>
+                        </>
+                      ) : (
+                        <td colspan="2" class="closed">
+                          Closed
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+            <p class="hours-note">Friday mornings end at 12:30 pm for Jummah.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section page" id="find-us" aria-labelledby="find-title">
+        <div class="section-head">
+          <h2 id="find-title">Six minutes on foot from Liberty Chowk</h2>
+          <p>Look for the blue tiled door on Kashi Lane.</p>
+        </div>
+        <div class="find">
+          <RouteMap />
+          <div class="find-text">
+            <address>
+              {clinic.address.map((line) => <span>{line}</span>)}
+            </address>
+            <ol class="steps">
+              <li>Start at Liberty Chowk.</li>
+              <li>Walk east on Main Boulevard, past the bank.</li>
+              <li>Turn left into Kashi Lane.</li>
+              <li>The clinic is the second door on the right.</li>
+            </ol>
+            <div class="contact-actions">
+              <button type="button" class="button" data-demo="directions">
+                <Icon name="route" />Directions
+              </button>
+              <button type="button" class="button button-quiet" data-demo="whatsapp">
+                <Icon name="chat" />WhatsApp
+              </button>
+              <button type="button" class="button button-quiet" data-demo="call">
+                <Icon name="phone" />Call
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section page" aria-labelledby="reviews-title">
+        <div class="section-head">
+          <h2 id="reviews-title">What patients say</h2>
+          <p>Example reviews written for this demo. A real site shows the clinic’s own Google reviews.</p>
+        </div>
+        <ul class="reviews">
+          {
+            reviews.map((r) => (
+              <li>
+                <blockquote>
+                  <p>{r.text}</p>
+                </blockquote>
+                <p class="review-by">
+                  {r.who}, about {r.about}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="section page" aria-labelledby="faq-title">
+        <div class="section-head">
+          <h2 id="faq-title">Questions people ask at the counter</h2>
+        </div>
+        <div class="faq">
+          {
+            faqs.map((f) => (
+              <details>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <div class="closing-inner page">
+          <h2 id="closing-title">The next free time is waiting for you.</h2>
+          <a class="button" href="#book" data-book-start>See free times</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page footer-grid">
+        <div class="footer-brand">
+          <TileMark size={40} />
+          <p>
+            <strong>{clinic.name}</strong>
+            <span class="footer-urdu" lang="ur" dir="rtl">{clinic.urduName}</span>
+            {clinic.address.join(', ')}
+          </p>
+        </div>
+        <p>
+          <strong>Timings</strong>
+          Monday to Saturday, 10 am to 1 pm and 5 pm to 10 pm. Sunday closed.
+        </p>
+        <p class="footer-demo">
+          <strong>This is a demo website.</strong>
+          The clinic, doctors, fees and reviews are made up. Treatment room photo by Benyamin Bohlouli on Unsplash.
+        </p>
+      </div>
+    </footer>
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+    <script>
+      import { openWindows } from '../data/clinic.js';
+
+      const TZ = 'Asia/Karachi';
+      const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      function pakistanClock() {
+        const parts = new Intl.DateTimeFormat('en-GB', {
+          timeZone: TZ,
+          weekday: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          hourCycle: 'h23',
+        }).formatToParts(new Date());
+        const get = (type) => parts.find((p) => p.type === type).value;
+        const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+        return { day, minutes: Number(get('hour')) * 60 + Number(get('minute')) };
+      }
+
+      function clock(minutes) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        return `${h12}${m ? `:${String(m).padStart(2, '0')}` : ''} ${h >= 12 ? 'pm' : 'am'}`;
+      }
+
+      function openStatus() {
+        const now = pakistanClock();
+        const today = openWindows[now.day];
+        const current = today.find(([from, to]) => now.minutes >= from && now.minutes < to);
+        if (current) return `Open now, until ${clock(current[1])}`;
+        const later = today.find(([from]) => now.minutes < from);
+        if (later) return `Closed now, opens at ${clock(later[0])}`;
+        for (let ahead = 1; ahead <= 7; ahead += 1) {
+          const day = (now.day + ahead) % 7;
+          if (openWindows[day].length) {
+            const name = ahead === 1 ? 'tomorrow' : DAY_NAMES[day];
+            return `Closed now, opens ${name} at ${clock(openWindows[day][0][0])}`;
+          }
+        }
+        return 'Open Monday to Saturday';
+      }
+
+      const status = document.querySelector('[data-open-status]');
+      if (status) status.textContent = openStatus();
+
+      const todayRow = document.querySelector(`tr[data-day="${pakistanClock().day}"]`);
+      if (todayRow) {
+        todayRow.classList.add('is-today');
+        todayRow.querySelector('.today-tag')?.removeAttribute('hidden');
+      }
+
+      // WhatsApp, call and directions only say what a real site would do.
+      const MESSAGES = {
+        whatsapp: 'Demo: on a real site this opens a WhatsApp chat with the clinic’s front desk.',
+        call: 'Demo: on a real site this calls the clinic’s phone number.',
+        directions: 'Demo: on a real site this opens Google Maps with directions to the clinic door.',
+      };
+      const toast = document.querySelector('[data-toast]');
+      let hideTimer;
+      document.addEventListener('click', (event) => {
+        const action = event.target.closest('[data-demo]');
+        if (!action) return;
+        toast.textContent = MESSAGES[action.dataset.demo];
+        toast.classList.add('is-shown');
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => toast.classList.remove('is-shown'), 4200);
+      });
+    </script>
+
+    <style>
+      .skip {
+        position: absolute;
+        left: var(--space-4);
+        top: -100px;
+        z-index: 10;
+        padding: var(--space-2) var(--space-4);
+        background: var(--glaze-raised);
+        border: 2px solid var(--lapis);
+        border-radius: var(--radius-tile);
+        font-weight: 700;
+      }
+
+      .skip:focus {
+        top: var(--space-2);
+      }
+
+      .demo-strip {
+        margin: 0;
+        padding: var(--space-2) var(--space-4);
+        border-bottom: 1px solid var(--ochre-edge);
+        background: var(--ochre-glaze);
+        font-size: var(--step--1);
+        text-align: center;
+      }
+
+      .site-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        padding-block: var(--space-4);
+        border-bottom: 1px solid var(--grout);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        color: var(--ink);
+        text-decoration: none;
+        margin-right: auto;
+      }
+
+      .brand-tile {
+        flex: none;
+      }
+
+      .brand-words {
+        display: grid;
+        line-height: 1;
+      }
+
+      .brand-name {
+        font-family: var(--font-display);
+        font-size: 1.9rem;
+        line-height: 0.95;
+      }
+
+      .brand-sub {
+        font-size: var(--step--1);
+        font-weight: 700;
+      }
+
+      .brand-urdu {
+        font-family: var(--font-urdu);
+        font-weight: 600;
+        font-size: 1.05rem;
+        line-height: 2.2;
+        padding-inline-start: var(--space-3);
+        border-inline-end: 1px solid var(--grout-strong);
+        padding-inline-end: var(--space-3);
+      }
+
+      .site-nav {
+        display: flex;
+        gap: var(--space-1);
+      }
+
+      .site-nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-tile);
+        color: var(--ink);
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 160ms ease;
+      }
+
+      .site-nav a:hover {
+        background: var(--turq-glaze-1);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+          'intro board'
+          'details board';
+        gap: var(--space-5) var(--space-7);
+        align-items: start;
+        padding-top: var(--space-7);
+      }
+
+      .hero-intro {
+        grid-area: intro;
+        display: grid;
+        gap: var(--space-5);
+        padding-top: var(--space-4);
+      }
+
+      .hero-board {
+        grid-area: board;
+      }
+
+      .hero-details {
+        grid-area: details;
+        display: grid;
+        gap: var(--space-5);
+      }
+
+      .hero h1 {
+        font-size: clamp(2.4rem, 1.5rem + 2.6vw, 3.7rem);
+        letter-spacing: -0.015em;
+      }
+
+      .lede {
+        font-size: var(--step-1);
+        max-width: 30rem;
+      }
+
+      .facts {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-block: 1px solid var(--grout);
+      }
+
+      .facts li {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: var(--space-3);
+        align-items: start;
+        padding-block: var(--space-3);
+      }
+
+      .facts li + li {
+        border-top: 1px solid var(--grout);
+      }
+
+      .facts strong {
+        display: block;
+      }
+
+      .fact-detail {
+        display: block;
+        font-size: var(--step--1);
+      }
+
+      .fact-icon {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--turq-edge);
+        border-radius: var(--radius-tile);
+        background: linear-gradient(165deg, #f4fbfa 0%, var(--turq-glaze-2) 100%);
+        box-shadow: inset 0 1px 0 #fff;
+      }
+
+      .fact-icon :global(svg) {
+        width: 20px;
+        height: 20px;
+      }
+
+      .contact-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+      }
+
+      .fee-boards {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        gap: var(--space-6);
+        align-items: start;
+      }
+
+      .fee-board {
+        padding: var(--space-5);
+        border: 1px solid var(--grout-strong);
+        border-radius: var(--radius-tile);
+        background: var(--glaze-raised);
+      }
+
+      .fee-title {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding-bottom: var(--space-3);
+        border-bottom: 2px solid var(--lapis);
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: var(--step-2);
+      }
+
+      .fee-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .fee-row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        padding-block: var(--space-3);
+        border-bottom: 1px solid var(--grout);
+      }
+
+      .fee-name {
+        font-weight: 600;
+      }
+
+      .fee-note {
+        display: block;
+        font-size: var(--step--1);
+        font-weight: 400;
+      }
+
+      .grout {
+        flex: 1 1 2rem;
+        min-width: 1.5rem;
+        border-bottom: 1px solid var(--grout-strong);
+        transform: translateY(-0.3em);
+      }
+
+      .fee {
+        flex: none;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .wall {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid var(--grout-strong);
+        border-radius: var(--radius-tile);
+        background: var(--grout-strong);
+        overflow: hidden;
+      }
+
+      .doc {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto auto auto;
+        gap: var(--space-3);
+        padding: var(--space-5);
+        background: var(--glaze-raised);
+      }
+
+      .doc-head {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: var(--space-3);
+        align-items: center;
+      }
+
+      .doc-head :global(svg) {
+        width: 48px;
+        height: 48px;
+      }
+
+      .doc-name h3 {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: var(--step-2);
+      }
+
+      .doc-degrees {
+        font-size: var(--step--1);
+      }
+
+      .doc-role {
+        justify-self: start;
+        padding: 2px var(--space-2);
+        border: 1px solid var(--turq-edge);
+        border-radius: var(--radius-small);
+        background: var(--turq-glaze-1);
+        font-size: var(--step--1);
+        font-weight: 700;
+      }
+
+      /* The doctor's week as a strip of tiles on shared grout:
+         glazed when the doctor is in, bare when not. */
+      .week {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1px;
+        border: 1px solid var(--grout-strong);
+        border-radius: var(--radius-small);
+        background: var(--grout-strong);
+        overflow: hidden;
+      }
+
+      .week-day {
+        display: grid;
+        place-items: center;
+        min-height: 34px;
+        font-size: var(--step--1);
+        font-weight: 700;
+      }
+
+      .week-day[data-in='yes'] {
+        background: linear-gradient(165deg, #f4fbfa 0%, var(--turq-glaze-3) 100%);
+        box-shadow: inset 0 1px 0 #fff;
+      }
+
+      .week-day[data-in='no'] {
+        background: var(--glaze);
+        font-weight: 400;
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+      }
+
+      .doc-facts {
+        display: grid;
+        gap: var(--space-1);
+        margin: 0;
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--grout);
+        font-size: var(--step--1);
+      }
+
+      .doc-facts div {
+        display: grid;
+        grid-template-columns: 3.2rem 1fr;
+      }
+
+      .doc-facts dd {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .doc-book {
+        width: 100%;
+      }
+
+      .timings {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: var(--space-6);
+        align-items: start;
+      }
+
+      .room {
+        margin: 0;
+        display: grid;
+        gap: var(--space-2);
+      }
+
+      .room img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+        border-radius: var(--radius-tile);
+        border: 1px solid var(--grout-strong);
+      }
+
+      .room figcaption,
+      .hours-note {
+        font-size: var(--step--1);
+      }
+
+      .hours {
+        display: grid;
+        gap: var(--space-3);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--glaze-raised);
+        border: 1px solid var(--grout-strong);
+        border-radius: var(--radius-tile);
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--grout);
+        text-align: left;
+      }
+
+      thead th {
+        font-size: var(--step--1);
+        border-bottom: 2px solid var(--lapis);
+      }
+
+      tbody th {
+        font-weight: 700;
+      }
+
+      tbody tr:last-child > * {
+        border-bottom: 0;
+      }
+
+      .closed {
+        font-weight: 600;
+      }
+
+      tr.is-today {
+        background: var(--turq-glaze-1);
+      }
+
+      .today-tag {
+        margin-inline-start: var(--space-2);
+        padding: 1px var(--space-2);
+        border: 1px solid var(--lapis);
+        border-radius: var(--radius-small);
+        font-size: var(--step--1);
+      }
+
+      .find {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        gap: var(--space-6);
+        align-items: start;
+      }
+
+      .find-text {
+        display: grid;
+        gap: var(--space-5);
+      }
+
+      address {
+        display: grid;
+        font-style: normal;
+        font-size: var(--step-1);
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .steps {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+      }
+
+      .steps li {
+        display: grid;
+        grid-template-columns: 2rem 1fr;
+        gap: var(--space-2);
+        padding-block: var(--space-2);
+        border-bottom: 1px solid var(--grout);
+        counter-increment: step;
+      }
+
+      .steps li::before {
+        content: counter(step);
+        display: grid;
+        place-items: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        border: 1px solid var(--turq-edge);
+        border-radius: var(--radius-small);
+        background: var(--turq-glaze-1);
+        font-weight: 700;
+        font-size: var(--step--1);
+      }
+
+      .reviews {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-block: 1px solid var(--grout-strong);
+      }
+
+      .reviews li {
+        display: grid;
+        align-content: space-between;
+        gap: var(--space-4);
+        padding: var(--space-5) var(--space-5) var(--space-5) 0;
+      }
+
+      .reviews li + li {
+        padding-left: var(--space-5);
+        border-left: 1px solid var(--grout);
+      }
+
+      blockquote {
+        margin: 0;
+        font-size: var(--step-1);
+        line-height: 1.45;
+      }
+
+      blockquote p::before {
+        content: '“';
+      }
+
+      blockquote p::after {
+        content: '”';
+      }
+
+      .review-by {
+        font-size: var(--step--1);
+        font-weight: 700;
+      }
+
+      .faq {
+        max-width: 48rem;
+        border-top: 1px solid var(--grout-strong);
+      }
+
+      details {
+        border-bottom: 1px solid var(--grout-strong);
+      }
+
+      summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        min-height: 56px;
+        padding-block: var(--space-3);
+        font-weight: 700;
+        font-size: var(--step-1);
+        cursor: pointer;
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: '';
+        flex: none;
+        width: 12px;
+        height: 12px;
+        border-right: 2px solid var(--lapis);
+        border-bottom: 2px solid var(--lapis);
+        transform: rotate(45deg) translateY(-3px);
+        transition: transform 200ms var(--ease-out);
+      }
+
+      details[open] summary::after {
+        transform: rotate(-135deg) translateY(-3px);
+      }
+
+      details p {
+        max-width: 40rem;
+        padding-bottom: var(--space-4);
+      }
+
+      /* A painted kashi frieze above and below the closing line. */
+      .closing {
+        margin-top: var(--space-9);
+        padding-block: 32px;
+        background:
+          var(--kashi-frieze) top left / 32px 32px repeat-x,
+          var(--kashi-frieze) bottom left / 32px 32px repeat-x,
+          var(--glaze-raised);
+        border-block: 1px solid var(--grout-strong);
+      }
+
+      .closing-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding: var(--space-6) 0;
+      }
+
+      .closing h2 {
+        font-size: var(--step-3);
+        max-width: 22ch;
+      }
+
+      .site-footer {
+        padding-block: var(--space-6) var(--space-7);
+        font-size: var(--step--1);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 1.3fr;
+        gap: var(--space-5);
+      }
+
+      .footer-grid strong {
+        display: block;
+      }
+
+      .footer-brand {
+        display: flex;
+        gap: var(--space-3);
+        align-items: start;
+      }
+
+      .footer-brand :global(svg) {
+        flex: none;
+      }
+
+      .footer-urdu {
+        display: block;
+        font-family: var(--font-urdu);
+        font-weight: 600;
+        line-height: 2.2;
+        text-align: left;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: var(--space-5);
+        z-index: 20;
+        width: min(30rem, calc(100% - 2rem));
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--lapis);
+        border-radius: var(--radius-tile);
+        background: var(--glaze-raised);
+        box-shadow: var(--shadow-lift);
+        font-weight: 600;
+        opacity: 0;
+        transform: translate(-50%, 12px);
+        pointer-events: none;
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 260ms var(--ease-out);
+      }
+
+      .toast:empty {
+        display: none;
+      }
+
+      .toast.is-shown {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      @media (max-width: 1080px) {
+        .hero {
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+          grid-template-areas:
+            'intro'
+            'board'
+            'details';
+          gap: var(--space-6);
+        }
+
+        .hero-intro,
+        .hero-details {
+          max-width: 40rem;
+        }
+
+        .wall {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 860px) {
+        .site-nav {
+          display: none;
+        }
+
+        .fee-boards,
+        .timings,
+        .find {
+          grid-template-columns: 1fr;
+        }
+
+        .reviews {
+          grid-template-columns: 1fr;
+        }
+
+        .reviews li,
+        .reviews li + li {
+          padding: var(--space-4) 0;
+          border-left: 0;
+        }
+
+        .reviews li + li {
+          border-top: 1px solid var(--grout);
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .site-header {
+          gap: var(--space-3);
+        }
+
+        .brand-urdu {
+          display: none;
+        }
+
+        .brand-name {
+          font-size: var(--step-2);
+        }
+
+        .header-book {
+          padding-inline: var(--space-4);
+        }
+
+        .hero {
+          padding-top: var(--space-5);
+          gap: var(--space-5);
+        }
+
+        .hero h1 {
+          font-size: var(--step-3);
+        }
+
+        .lede {
+          font-size: var(--step-0);
+        }
+
+
+        .wall {
+          grid-template-columns: 1fr;
+        }
+
+        .fee-board {
+          padding: var(--space-4);
+        }
+
+        .section {
+          padding-top: var(--space-8);
+        }
+
+        .closing-inner {
+          padding: var(--space-5) 0;
+        }
+
+        th,
+        td {
+          padding: var(--space-2);
+          font-size: var(--step--1);
+        }
+
+        td {
+          white-space: nowrap;
+        }
+
+        .find .contact-actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .find .contact-actions .button:first-child {
+          grid-column: 1 / -1;
+        }
+
+        .closing-inner .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </body>
+</html>

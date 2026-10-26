@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T19:00:00+05:00",
+  "title": "Design System: Neelam Dental & Family Clinic (demo)",
+  "extensions": {
+    "colorMeta": {
+      "glaze": { "role": "neutral", "displayName": "White Glaze", "canonical": "#f5f7f2", "tonalRamp": ["#2c2f2a", "#50544d", "#7a7f75", "#a3a89e", "#c9cdc4", "#e4e7e0", "#f5f7f2", "#fcfdfa"] },
+      "glaze-raised": { "role": "neutral", "displayName": "Raised Glaze", "canonical": "#fcfdfa", "tonalRamp": ["#2c2f2a", "#50544d", "#7a7f75", "#a3a89e", "#c9cdc4", "#e4e7e0", "#f5f7f2", "#fcfdfa"] },
+      "ink": { "role": "primary", "displayName": "Lapis Ink", "canonical": "#172b6b", "tonalRamp": ["#0a1430", "#11204f", "#172b6b", "#33498a", "#6274a9", "#95a2c8", "#c6cde3", "#ebeef6"] },
+      "lapis": { "role": "primary", "displayName": "Lapis", "canonical": "#1d3a8a", "tonalRamp": ["#0b1535", "#142a66", "#1d3a8a", "#3a58aa", "#6680c4", "#96a8da", "#c4cfec", "#e8edf8"] },
+      "turq": { "role": "secondary", "displayName": "Turquoise", "canonical": "#1f9a95", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "turq-glaze-highlight": { "role": "secondary", "displayName": "Glaze Highlight", "canonical": "#f4fbfa", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "turq-glaze-1": { "role": "secondary", "displayName": "Pale Turquoise Glaze", "canonical": "#e3f4f1", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "turq-glaze-2": { "role": "secondary", "displayName": "Turquoise Glaze", "canonical": "#c4e9e4", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "turq-glaze-3": { "role": "secondary", "displayName": "Deep Turquoise Glaze", "canonical": "#9fd9d1", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "turq-edge": { "role": "secondary", "displayName": "Turquoise Edge", "canonical": "#6fc2b8", "tonalRamp": ["#0b3b39", "#136360", "#1f9a95", "#6fc2b8", "#9fd9d1", "#c4e9e4", "#e3f4f1", "#f4fbfa"] },
+      "ochre": { "role": "tertiary", "displayName": "Ochre", "canonical": "#c9922e", "tonalRamp": ["#3f2c0c", "#6b4b15", "#9c6f22", "#c9922e", "#d9ad5c", "#e8c98c", "#f6e4bf", "#fbf3e2"] },
+      "ochre-glaze": { "role": "tertiary", "displayName": "Ochre Glaze", "canonical": "#f6e4bf", "tonalRamp": ["#3f2c0c", "#6b4b15", "#9c6f22", "#c9922e", "#d9ad5c", "#e8c98c", "#f6e4bf", "#fbf3e2"] },
+      "ochre-edge": { "role": "tertiary", "displayName": "Ochre Edge", "canonical": "#d9ad5c", "tonalRamp": ["#3f2c0c", "#6b4b15", "#9c6f22", "#c9922e", "#d9ad5c", "#e8c98c", "#f6e4bf", "#fbf3e2"] },
+      "brick": { "role": "tertiary", "displayName": "Brick", "canonical": "#9c4a2f", "tonalRamp": ["#31170e", "#5a2b1b", "#7c3a25", "#9c4a2f", "#b86d52", "#d2b2a3", "#ead9cf", "#f7efea"] },
+      "brick-matte": { "role": "tertiary", "displayName": "Matte Brick", "canonical": "#ead9cf", "tonalRamp": ["#31170e", "#5a2b1b", "#7c3a25", "#9c4a2f", "#b86d52", "#d2b2a3", "#ead9cf", "#f7efea"] },
+      "brick-edge": { "role": "tertiary", "displayName": "Brick Edge", "canonical": "#d2b2a3", "tonalRamp": ["#31170e", "#5a2b1b", "#7c3a25", "#9c4a2f", "#b86d52", "#d2b2a3", "#ead9cf", "#f7efea"] },
+      "grout": { "role": "neutral", "displayName": "Grout", "canonical": "#c7d1ca", "tonalRamp": ["#2e3631", "#4d5952", "#6f7d74", "#8f9d94", "#a9b7ae", "#c7d1ca", "#e1e7e3", "#f2f5f3"] },
+      "grout-strong": { "role": "neutral", "displayName": "Strong Grout", "canonical": "#a9b7ae", "tonalRamp": ["#2e3631", "#4d5952", "#6f7d74", "#8f9d94", "#a9b7ae", "#c7d1ca", "#e1e7e3", "#f2f5f3"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The hero promise only; 2.15rem on phones." },
+      "token": { "displayName": "Token", "purpose": "The booking token number, which is the token's heading." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings and the closing line." },
+      "title": { "displayName": "Title", "purpose": "Board heading, fee board titles, doctor names; Rozha also sets day dates, the earliest slot time and the wordmark." },
+      "subtitle": { "displayName": "Subtitle", "purpose": "Hind 700 h3, FAQ questions, the address; section ledes at the same size in 400." },
+      "body": { "displayName": "Body", "purpose": "Running text with tabular numerals." },
+      "label": { "displayName": "Label", "purpose": "Fact details, chip notes, legend, captions; tile tags drop to 0.75rem." },
+      "urdu-name": { "displayName": "Urdu Name", "purpose": "The clinic's Urdu name only, from a subset font." }
+    },
+    "shadows": [
+      { "name": "tile", "value": "0 1px 2px rgb(23 43 107 / 0.1), 0 4px 10px -6px rgb(23 43 107 / 0.18)", "purpose": "Glazed tiles at rest." },
+      { "name": "lift", "value": "0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3)", "purpose": "Hover on tiles, the jali frame, the toast." },
+      { "name": "glaze-bevel", "value": "inset 0 1px 0 #fff, inset 0 -2px 0 rgb(31 154 149 / 0.2)", "purpose": "The fired edge on buttons and free slots." },
+      { "name": "field-well", "value": "inset 0 1px 2px rgb(23 43 107 / 0.08)", "purpose": "Text inputs and selects." },
+      { "name": "jali-frame", "value": "inset 0 0 0 1px rgb(23 43 107 / 0.18), 0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3)", "purpose": "The jali screen around the booking board." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Every press, lift, sweep and reveal." },
+      { "name": "press", "value": "transform 140ms, scale(0.97) on :active", "purpose": "Buttons, chips, day and slot tiles." },
+      { "name": "lift", "value": "box-shadow 200ms", "purpose": "Tile shadow deepening on hover." },
+      { "name": "glaze-sweep", "value": "720ms translateX(-130%) to 130%", "purpose": "White highlight across a slot when it is picked." },
+      { "name": "token-stamp", "value": "460ms clip-path inset(0 0 100% 0) to 0, translateY(-6px) to 0", "purpose": "The booking token printing in." },
+      { "name": "route-walk", "value": "1.6s linear infinite stroke-dashoffset", "purpose": "The dotted route on the map; off under reduced motion." },
+      { "name": "toast", "value": "opacity 200ms, transform 260ms from translateY(12px)", "purpose": "Demo action notices." },
+      { "name": "reduced-motion", "value": "all animation and transition durations to 1ms", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "640px" },
+      { "name": "tablet", "value": "860px" },
+      { "name": "hero-stack", "value": "1080px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Glaze Button",
+      "kind": "button",
+      "refersTo": "button-glaze",
+      "description": "The primary action: a turquoise glazed tile with a 2px lapis edge and lapis ink.",
+      "html": "<button class=\"ds-btn-glaze\">Book a visit</button>",
+      "css": ".ds-btn-glaze { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 48px; padding: 0 1.5rem; border: 2px solid var(--lapis, #1d3a8a); border-radius: 6px; background: linear-gradient(165deg, #f4fbfa 0%, #c4e9e4 60%, #9fd9d1 100%); box-shadow: inset 0 -2px 0 rgb(31 154 149 / 0.22), 0 1px 2px rgb(23 43 107 / 0.1), 0 4px 10px -6px rgb(23 43 107 / 0.18); color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; font-weight: 700; cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-glaze:hover { box-shadow: inset 0 -2px 0 rgb(31 154 149 / 0.22), 0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3); } .ds-btn-glaze:active { transform: scale(0.97); } .ds-btn-glaze:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Secondary actions: raised glaze with a strong grout edge that turns turquoise on hover.",
+      "html": "<button class=\"ds-btn-quiet\">Book with Dr. Hira</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.5rem; border: 1px solid #a9b7ae; border-radius: 6px; background: linear-gradient(180deg, #fff 0%, #fcfdfa 100%); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgb(23 43 107 / 0.1), 0 4px 10px -6px rgb(23 43 107 / 0.18); color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; font-weight: 700; cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-quiet:hover { border-color: #6fc2b8; box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3); } .ds-btn-quiet:active { transform: scale(0.97); } .ds-btn-quiet:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; }"
+    },
+    {
+      "name": "Doctor Chip",
+      "kind": "chip",
+      "refersTo": "doctor-chip",
+      "description": "Doctor switch on the booking board; selected takes a 2px lapis edge and pale glaze.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\"><span class=\"ds-chip-name\">Any dentist</span><span class=\"ds-chip-note\">Earliest</span></button><button class=\"ds-chip\" aria-pressed=\"false\"><span class=\"ds-chip-name\">Dr. Hira</span><span class=\"ds-chip-note\">Braces</span></button></div>",
+      "css": ".ds-chips { display: flex; gap: 0.5rem; } .ds-chip { display: grid; min-height: 48px; padding: 0.5rem 0.75rem; border: 1px solid #a9b7ae; border-radius: 6px; background: #fff; color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; text-align: left; line-height: 1.2; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-chip:hover { border-color: #6fc2b8; } .ds-chip:active { transform: scale(0.97); } .ds-chip[aria-pressed='true'] { border: 2px solid #1d3a8a; padding: calc(0.5rem - 1px) calc(0.75rem - 1px); background: #e3f4f1; } .ds-chip:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; } .ds-chip-name { font-weight: 700; font-size: 1.125rem; } .ds-chip-note { font-size: 0.875rem; }"
+    },
+    {
+      "name": "Day Tiles",
+      "kind": "custom",
+      "refersTo": "day-tile-last",
+      "description": "The fill ladder: glaze depth for free and filling, ochre glaze for last few, matte brick for full, dashed grout for not in.",
+      "html": "<div class=\"ds-days\"><button class=\"ds-day\" data-level=\"free\" aria-pressed=\"true\"><span class=\"ds-day-name\">Mon</span><span class=\"ds-day-date\">26 Oct</span><span class=\"ds-day-level\">Free</span></button><button class=\"ds-day\" data-level=\"filling\"><span class=\"ds-day-name\">Tue</span><span class=\"ds-day-date\">27 Oct</span><span class=\"ds-day-level\">Filling up</span></button><button class=\"ds-day\" data-level=\"last\"><span class=\"ds-day-name\">Wed</span><span class=\"ds-day-date\">28 Oct</span><span class=\"ds-day-level\">Last few</span></button><button class=\"ds-day\" data-level=\"full\"><span class=\"ds-day-name\">Thu</span><span class=\"ds-day-date\">29 Oct</span><span class=\"ds-day-level\">Full</span></button><button class=\"ds-day\" data-level=\"off\"><span class=\"ds-day-name\">Fri</span><span class=\"ds-day-date\">30 Oct</span><span class=\"ds-day-level\">Not in</span></button></div>",
+      "css": ".ds-days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; } .ds-day { display: grid; justify-items: center; gap: 1px; min-height: 76px; padding: 0.5rem 0.25rem; border: 1px solid #6fc2b8; border-radius: 6px; color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; line-height: 1.15; cursor: pointer; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), inset 0 -2px 0 rgb(23 43 107 / 0.08); transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-day:active { transform: scale(0.97); } .ds-day[data-level='free'] { background: linear-gradient(170deg, #eefaf8 0%, #9fd9d1 100%); } .ds-day[data-level='filling'] { background: linear-gradient(170deg, #f7fcfb 0%, #e3f4f1 100%); } .ds-day[data-level='last'] { border-color: #d9ad5c; background: linear-gradient(170deg, #fdf7ea 0%, #f6e4bf 100%); } .ds-day[data-level='full'] { border-color: #d2b2a3; background: #ead9cf; box-shadow: none; } .ds-day[data-level='off'] { border: 1px dashed #a9b7ae; background: transparent; box-shadow: none; } .ds-day[aria-pressed='true'] { outline: 2px solid #1d3a8a; outline-offset: 2px; } .ds-day:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; } .ds-day-name { font-weight: 700; font-size: 0.875rem; } .ds-day-date { font-family: 'Rozha One', Georgia, serif; font-size: 1.25rem; } .ds-day-level { font-size: 0.75rem; font-weight: 600; }"
+    },
+    {
+      "name": "Slot Tiles",
+      "kind": "custom",
+      "refersTo": "slot-free",
+      "description": "Free times as glazed tiles; the earliest carries Book; taken is matte brick, struck through; picking sweeps a highlight across the glaze.",
+      "html": "<div class=\"ds-slots\"><button class=\"ds-slot ds-slot-first\"><span class=\"ds-slot-tag\">Earliest</span><span class=\"ds-slot-time\">7:20 pm</span><span class=\"ds-slot-book\">Book <svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M4 10h11m-4-4 4 4-4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></button><button class=\"ds-slot\" disabled data-taken><span class=\"ds-slot-time\">7:40 pm</span><span class=\"ds-slot-tag\">Taken</span></button><button class=\"ds-slot\" aria-pressed=\"true\"><span class=\"ds-slot-time\">8:40 pm</span></button><button class=\"ds-slot\"><span class=\"ds-slot-time\">9:00 pm</span></button></div>",
+      "css": ".ds-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; } .ds-slot { position: relative; display: grid; place-content: center; min-height: 54px; padding: 0.5rem; overflow: hidden; border: 1px solid #6fc2b8; border-radius: 6px; background: linear-gradient(165deg, #f4fbfa 0%, #c4e9e4 62%, #9fd9d1 100%); box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgb(31 154 149 / 0.2), 0 1px 2px rgb(23 43 107 / 0.1), 0 4px 10px -6px rgb(23 43 107 / 0.18); color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; font-weight: 700; line-height: 1.15; cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-slot::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 28%, rgb(255 255 255 / 0.85) 48%, transparent 68%); transform: translateX(-130%); pointer-events: none; } .ds-slot:not(:disabled):hover { box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgb(31 154 149 / 0.2), 0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3); } .ds-slot:not(:disabled):hover::after { transition: transform 720ms cubic-bezier(0.23, 1, 0.32, 1); transform: translateX(130%); } .ds-slot:not(:disabled):active { transform: scale(0.97); } .ds-slot:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; } .ds-slot[aria-pressed='true'] { border: 2px solid #1d3a8a; background: linear-gradient(165deg, #c4e9e4 0%, #9fd9d1 55%, #6fc2b8 100%); } .ds-slot[data-taken] { border-color: #d2b2a3; background: #ead9cf; box-shadow: none; font-weight: 400; cursor: not-allowed; } .ds-slot[data-taken] .ds-slot-time { text-decoration: line-through; text-decoration-thickness: 1px; } .ds-slot-tag { font-size: 0.75rem; font-weight: 600; } .ds-slot-first { grid-column: span 2; grid-template-columns: auto 1fr auto; align-items: center; place-content: stretch; gap: 0.75rem; padding-inline: 1rem; text-align: left; } .ds-slot-first .ds-slot-time { font-family: 'Rozha One', Georgia, serif; font-weight: 400; font-size: 1.25rem; } .ds-slot-book { display: inline-flex; align-items: center; gap: 0.25rem; }"
+    },
+    {
+      "name": "Booking Token",
+      "kind": "card",
+      "refersTo": "booking-token",
+      "description": "The one solid lapis object: a perforated ticket whose number is its heading.",
+      "html": "<div class=\"ds-token\"><h3 class=\"ds-token-number\">Token 04</h3><dl class=\"ds-token-facts\"><div><dt>Day</dt><dd>Mon, 26 October</dd></div><div><dt>Time</dt><dd>7:20 pm</dd></div><div><dt>Doctor</dt><dd>Dr. Hira Saeed</dd></div><div><dt>Fee</dt><dd>Rs 2,000, paid at the clinic</dd></div></dl><p>You are booked. Please come 10 minutes early. Demo: nothing was sent.</p></div>",
+      "css": ".ds-token { display: grid; gap: 0.75rem; padding: 2rem 1.5rem 1.5rem; border-radius: 6px; background: #1d3a8a; color: #fcfdfa; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; line-height: 1.55; -webkit-mask: radial-gradient(circle 6px at 9px 0, #0000 98%, #000) -9px 0 / 18px 100% repeat-x; mask: radial-gradient(circle 6px at 9px 0, #0000 98%, #000) -9px 0 / 18px 100% repeat-x; } .ds-token-number { margin: 0; font-family: 'Rozha One', Georgia, serif; font-weight: 400; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem); line-height: 1; } .ds-token-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1.5rem; margin: 0; padding: 1rem 0; border-block: 1px solid rgb(252 253 250 / 0.35); } .ds-token-facts dt { font-size: 0.875rem; } .ds-token-facts dd { margin: 0; font-weight: 700; } .ds-token p { margin: 0; max-width: 34rem; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Booking form field: white well, strong grout edge, turquoise caret, brick when invalid.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-mobile\">Mobile number</label><input id=\"ds-mobile\" type=\"tel\" placeholder=\"0300 1234567\" /><p class=\"ds-field-help\">The clinic confirms on WhatsApp.</p></div>",
+      "css": ".ds-field { display: grid; gap: 0.25rem; color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; } .ds-field label { font-weight: 700; } .ds-field input { min-height: 48px; padding: 0 0.75rem; border: 1px solid #a9b7ae; border-radius: 6px; background: #fff; box-shadow: inset 0 1px 2px rgb(23 43 107 / 0.08); caret-color: #1f9a95; color: #172b6b; font: inherit; transition: border-color 160ms ease; } .ds-field input::placeholder { color: #172b6b; opacity: 0.62; } .ds-field input:hover { border-color: #6fc2b8; } .ds-field input:focus-visible { outline: 3px solid #8a5a12; outline-offset: 1px; border-color: #1d3a8a; } .ds-field input[aria-invalid='true'] { border: 2px solid #9c4a2f; } .ds-field-help { margin: 0; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Site Navigation",
+      "kind": "nav",
+      "description": "In-page links in Hind 600 with a pale glaze wash on hover; hidden under 860px.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Fees</a><a href=\"#\">Doctors</a><a href=\"#\">Timings</a><a href=\"#\">Find us</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 0.25rem; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; font-size: 1.125rem; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.75rem; border-radius: 6px; color: #172b6b; font-weight: 600; text-decoration: none; transition: background-color 160ms ease; } .ds-nav a:hover { background: #e3f4f1; } .ds-nav a:focus-visible { outline: 3px solid #8a5a12; outline-offset: 2px; }"
+    },
+    {
+      "name": "Jali Frame",
+      "kind": "custom",
+      "description": "The pierced marble lattice around the booking board, with its light falling across the top of the board.",
+      "html": "<div class=\"ds-jali\"><div class=\"ds-board\"><h2>Free times</h2><p>5 free times today with any dentist.</p></div></div>",
+      "css": ".ds-jali { padding: 28px; border-radius: 10px; background: var(--jali-pattern), radial-gradient(120% 90% at 30% 15%, #f2fbf9 0%, #9fd9d1 50%, #4fb3a8 100%); background-size: 28px 28px, 100% 100%; box-shadow: inset 0 0 0 1px rgb(23 43 107 / 0.18), 0 2px 4px rgb(23 43 107 / 0.1), 0 12px 24px -12px rgb(23 43 107 / 0.3); } .ds-board { position: relative; isolation: isolate; display: grid; gap: 0.75rem; min-height: 180px; padding: 1.5rem; border: 1px solid #a9b7ae; border-radius: 4px; background: #fcfdfa; color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; } .ds-board::before { content: ''; position: absolute; inset: 0 0 auto; height: 220px; z-index: -1; background: var(--jali-light); background-size: 56px 56px; background-position: 8px -14px; opacity: 0.32; -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, transparent 100%); pointer-events: none; } .ds-board h2 { margin: 0; font-family: 'Rozha One', Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 1.25rem + 1vw, 1.875rem); line-height: 1.08; } .ds-board p { margin: 0; font-size: 0.875rem; font-weight: 600; } @media (max-width: 640px) { .ds-jali { padding: 20px; background-size: 20px 20px, 100% 100%; } .ds-board::before { background-size: 40px 40px; } }"
+    },
+    {
+      "name": "Week Strip",
+      "kind": "custom",
+      "description": "A doctor's six-day week as tiles on shared grout: glazed when in, bare and struck through when not.",
+      "html": "<div class=\"ds-week\"><span data-in=\"yes\">Mon</span><span data-in=\"no\">Tue</span><span data-in=\"yes\">Wed</span><span data-in=\"no\">Thu</span><span data-in=\"yes\">Fri</span><span data-in=\"yes\">Sat</span></div>",
+      "css": ".ds-week { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; border: 1px solid #a9b7ae; border-radius: 4px; background: #a9b7ae; overflow: hidden; color: #172b6b; font-family: 'Hind', 'Segoe UI', system-ui, sans-serif; } .ds-week span { display: grid; place-items: center; min-height: 34px; font-size: 0.8125rem; font-weight: 700; } .ds-week [data-in='yes'] { background: linear-gradient(165deg, #f4fbfa 0%, #9fd9d1 100%); box-shadow: inset 0 1px 0 #fff; } .ds-week [data-in='no'] { background: #f5f7f2; font-weight: 400; text-decoration: line-through; text-decoration-thickness: 1px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Glazed Appointment Wall",
+    "overview": "The clinic is laid as cool kashi tilework. The ground is white glaze, every word is set in one lapis ink, and anything a patient can take is a turquoise glazed tile with a bevelled edge. Availability is read the way a tiled wall is read: deep glaze is free, pale glaze is filling up, ochre glaze is the last few, and matte terracotta brick is taken. Thin grout lines join every caption to its tile, every fee to its price, every row to the next.\n\nThe signature object is the booking board: a white board framed by a pierced marble jali whose light falls across the top of the board and fades. Picking a slot sweeps a highlight across the tile like light on wet glaze, and confirming prints the one solid lapis object on the page, the booking token. The kashi tile itself (an eight point lapis star with turquoise corner quarters and an ochre heart) recurs as the brand mark, the fee board seal, the doctor medallion, the clinic pin on the map, and the painted frieze that bands the closing line.\n\nDensity is calm and specific rather than decorative: written fees, real looking timings, named doctors and their weeks. The world refuses the stock smiling-patient hero with a lone Book button and the grid of icon service cards.",
+    "keyCharacteristics": [
+      "White glaze ground, single lapis ink, no grey text.",
+      "Turquoise glaze depth encodes availability; ochre is scarcity; matte brick is taken.",
+      "Raised things are glazed tiles with a bevel; taken or absent things are flat and matte.",
+      "Grout lines (1px) do the structural work instead of cards and boxes.",
+      "One solid lapis object: the confirmed booking token.",
+      "Rozha One for names, dates, times and headings; Hind for everything read."
+    ],
+    "rules": [
+      { "name": "The One Lapis Moment Rule", "body": "Lapis is ink and edge everywhere. It becomes a solid fill exactly once: the confirmed booking token. Buttons are never solid lapis.", "section": "colors" },
+      { "name": "The Glaze Means Free Rule", "body": "Only takeable things are glazed. The deeper the turquoise, the freer the day. Last few is ochre glaze. Taken is matte brick and is never glazed, bevelled or shadowed.", "section": "colors" },
+      { "name": "The One Ink Rule", "body": "All text is lapis ink on glaze. Hierarchy comes from size, weight and face, not from grey.", "section": "colors" },
+      { "name": "The Painted Name Rule", "body": "Rozha One sets names, dates, times and headings: the things a sign painter would letter. Anything a patient reads as a sentence is Hind.", "section": "typography" },
+      { "name": "The No Kicker Rule", "body": "A heading stands alone. No eyebrow or small caps label above a heading; the token's number is its heading.", "section": "typography" },
+      { "name": "The Matte Is Taken Rule", "body": "Losing the bevel and shadow is how the wall says no. Never give a taken or unavailable tile depth.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make anything takeable a glazed tile: turquoise gradient, turquoise edge, glaze bevel, tile shadow.",
+      "Do encode availability only through the ladder: glaze 3 free, glaze 1 filling, ochre glaze last few, matte brick taken, dashed grout not in.",
+      "Do set every word in lapis ink on glaze; build hierarchy with Rozha, Hind weight and size.",
+      "Do join captions, rows and prices with 1px grout lines and grout leaders instead of boxing them.",
+      "Do keep tap targets at 44px minimum and controls at 48px.",
+      "Do press with scale 0.97 on the ease out curve (`cubic-bezier(0.23, 1, 0.32, 1)`) and drop all motion to 1ms under reduced motion.",
+      "Do label every made-up fact as demo where a visitor could mistake it for real, in the ochre notice strip or a plain caption.",
+      "Do use the one stroke icon family (24 grid, 2px round strokes) inside small glazed icon tiles, and choose each icon for its meaning."
+    ],
+    "donts": [
+      "Don't fill a button with solid lapis; solid lapis belongs to the booking token alone.",
+      "Don't glaze, bevel or shadow anything taken or unavailable.",
+      "Don't use grey or opacity-faded text for hierarchy.",
+      "Don't put a kicker, eyebrow or small caps label above a heading.",
+      "Don't lead with a stock smiling-patient hero and a lone Book button, and don't lay services out as a grid of icon cards; services are a written fee board.",
+      "Don't use the light ochre (#c9922e) for focus rings: it falls under 3:1 on the glazes. Focus is the dark ochre --focus (#8a5a12), about 5.5:1 on white glaze and 3.8:1 on the deepest turquoise glaze."
+    ]
+  }
+}
